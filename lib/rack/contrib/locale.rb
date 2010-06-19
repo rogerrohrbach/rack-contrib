@@ -31,7 +31,7 @@ module Rack
         I18n.available_locales.include?(l) || l == :*
       end
 
-      match == :* ? I18n.default_locale : match
+      (match.nil? || match == :*) ? I18n.default_locale : match
     end
 
 
