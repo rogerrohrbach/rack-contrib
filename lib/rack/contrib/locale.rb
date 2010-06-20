@@ -49,16 +49,21 @@ module Rack
       languages = {}
 
       accept_language.split(/, */).each do |e|
-        if l = /\A#{language_range}/.match(e)
+        if lr = /\A#{language_range}/.match(e)
         then
-          # discard any subtags
-          l = /\A#{primary_tag}/.match(l.to_s) unless l.to_s == '*'
+          # also match as prefix
+          lp = /\A#{primary_tag}/.match(lr.to_s) unless lr.to_s == '*'
+
+          lr = lr.to_s
+          lp = lp.to_s
 
           if q = /#{quality_factor}\z/.match(e).to_a[1]
           then
-            languages[l.to_s] = q.to_f
+            languages[lr] = q.to_f
+            languages[lp] = q.to_f if lp != lr
           else
-            languages[l.to_s] = 1
+            languages[lr] = 1
+            languages[lp] = 1 if lp != lr
           end
         end
       end
